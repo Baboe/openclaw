@@ -60,15 +60,19 @@ export function startGatewayMaintenanceTimers(params: {
   }, TICK_INTERVAL_MS);
 
   // periodic health refresh to keep cached snapshot warm
+  // Skip probes when channels are being skipped (Railway/resource-constrained deployments)
+  const skipChannels =
+    process.env.OPENCLAW_SKIP_CHANNELS === "1" || process.env.CLAWDBOT_SKIP_CHANNELS === "1";
   const healthInterval = setInterval(() => {
     void params
-      .refreshGatewayHealthSnapshot({ probe: true })
+      .refreshGatewayHealthSnapshot({ probe: !skipChannels })
       .catch((err) => params.logHealth.error(`refresh failed: ${formatError(err)}`));
   }, HEALTH_REFRESH_INTERVAL_MS);
 
   // Prime cache so first client gets a snapshot without waiting.
+  // Skip probing if channels are being skipped (Railway/resource-constrained environments)
   void params
-    .refreshGatewayHealthSnapshot({ probe: true })
+    .refreshGatewayHealthSnapshot({ probe: !skipChannels })
     .catch((err) => params.logHealth.error(`initial refresh failed: ${formatError(err)}`));
 
   // dedupe cache cleanup
