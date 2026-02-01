@@ -37,9 +37,7 @@ ENV NODE_ENV=production
 USER node
 
 # Run the gateway service with Railway-compatible settings
-# Use environment variables for configuration
-ENV OPENCLAW_GATEWAY_PORT=8080
-ENV OPENCLAW_GATEWAY_BIND=lan
-ENV OPENCLAW_ALLOW_UNCONFIGURED=1
-
-CMD ["node", "dist/index.js", "gateway"]
+# --port 8080: Standard Railway HTTP port
+# --bind lan: Accept connections from Railway's HTTP proxy
+# --allow-unconfigured: Start without pre-existing config (Railway onboarding use case)
+CMD ["node", "dist/index.js", "gateway", "--port", "8080", "--bind", "lan", "--allow-unconfigured"]
