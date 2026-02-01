@@ -35,6 +35,10 @@ ENV NODE_ENV=production
 # Skip channel initialization on startup - users can enable channels after setup
 ENV OPENCLAW_SKIP_CHANNELS=1
 
+# Increase Node.js heap size for Railway container (default is ~512MB)
+# Set max-old-space-size to 1.5GB to prevent OOM during startup
+ENV NODE_OPTIONS="--max-old-space-size=1536"
+
 # Security hardening: Run as non-root user
 # The node:22-bookworm image includes a 'node' user (uid 1000)
 # This reduces the attack surface by preventing container escape via root privileges
