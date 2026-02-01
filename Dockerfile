@@ -36,4 +36,8 @@ ENV NODE_ENV=production
 # This reduces the attack surface by preventing container escape via root privileges
 USER node
 
-CMD ["node", "dist/index.js"]
+# Run the gateway service with Railway-compatible settings
+# --port 8080: Standard Railway HTTP port
+# --bind lan: Accept connections from Railway's HTTP proxy
+# --allow-unconfigured: Start without pre-existing config (Railway onboarding use case)
+CMD ["node", "dist/index.js", "gateway", "--port", "8080", "--bind", "lan", "--allow-unconfigured"]
